@@ -1,6 +1,6 @@
 import pyttsx3
 import datetime
-import speech_recognition as s
+import speech_recognition as sr
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -15,21 +15,27 @@ def speak(audio):
 
 def takeCommandFromUser():
 
-    r = s.Recognizer()
+    r = sr.Recognizer()
 
-    with s.Microphone() as source:
+    with sr.Microphone() as source:
         print("Listening.....")
+        r.adjust_for_ambient_noise(source,duration=1)
         r.pause_threshold = 1
+        #r.record(source,duration=2)
         audio = r.listen(source)
+        print("done")
     
     try:
         print("Recognizing.....")
-        query = r.recognize_google(audio, language = 'en-in')
+        query = r.recognize_google(audio, language = 'en-in', show_all=False)
         print(f"User said: {query}\n")
 
-    except Exception as exp:
+    except Exception:
+        #print (exp)
         print("Say that again please......")
         return "None"
+
+    return (query)
 
 def greet():
     
@@ -47,3 +53,4 @@ def greet():
 
 if __name__ == "__main__" :
     greet()
+    takeCommandFromUser()
